@@ -7,7 +7,8 @@
           <router-link to="/">Home</router-link>
           <router-link to="/about">About</router-link>
         </nav>
-        <div>Not signed in</div>
+
+        <div @click="spotifyLogin">Not signed in</div>
       </section>
       <hr />
     </header>
@@ -18,12 +19,25 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent } from "vue";
+  import { defineComponent, onMounted } from "vue";
+  import { useStore } from "vuex";
 
   import OctocatCorner from "@/components/OctocatCorner.vue";
 
   export default defineComponent({
     components: { OctocatCorner },
+
+    setup() {
+      const store = useStore();
+
+      onMounted(() => store.dispatch("loadSpotifyToken"));
+
+      const spotifyLogin = () => store.dispatch("getNewSpotifyToken");
+
+      return {
+        spotifyLogin,
+      };
+    },
   });
 </script>
 
