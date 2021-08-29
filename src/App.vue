@@ -8,7 +8,10 @@
           <router-link to="/about">About</router-link>
         </nav>
 
-        <div @click="spotifyLogin">Not signed in</div>
+        <div id="user-container" @click="spotifyLogin">
+          <template v-if="isSignedIn">Signed in as {{ username }}</template>
+          <template v-else>Not signed in</template>
+        </div>
       </section>
       <hr />
     </header>
@@ -19,10 +22,15 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, onMounted } from "vue";
+  import { computed, defineComponent, onMounted, provide, ref, shallowRef, watch } from "vue";
   import { useStore } from "vuex";
 
+  import { SpotifyWebApi } from "spotify-web-api-ts";
+  import { PrivateUser } from "spotify-web-api-ts/types/types/SpotifyObjects";
+
   import OctocatCorner from "@/components/OctocatCorner.vue";
+
+  import { SpotifyApiKey } from "@/data/injections";
 
   export default defineComponent({
     components: { OctocatCorner },
@@ -30,12 +38,50 @@
     setup() {
       const store = useStore();
 
+      // TODO: make this a build environment variable
+      const spotifyClientId = "6bebebaf68e407eab01ea7ca182a81a";
+
+      const spotifyToken = computed(() => store.state.spotifyAccessToken);
+
       onMounted(() => store.dispatch("loadSpotifyToken"));
 
       const spotifyLogin = () => store.dispatch("getNewSpotifyToken");
 
+      const spotifyApi = shallowRef(new SpotifyWebApi({ clientId: spotifyClientId }));
+      const spotifyCurrentUser = ref<PrivateUser | null>(null);
+
+      const fetchState = (api: SpotifyWebApi) => {
+        api.users
+          .getMe()
+          .then((user) => (spotifyCurrentUser.value = user))
+          .catch((e) => console.error(e));
+      };
+
+      // TODO: put state in Vuex store, should remove the need for this
+      fetchState(spotifyApi.value);
+
+      watch(spotifyToken, (newValue) => {
+        console.log("token changed to", newValue);
+
+        if (newValue) {
+          const api = new SpotifyWebApi({
+            clientId: spotifyClientId,
+            accessToken: newValue,
+          });
+
+          fetchState(api);
+
+          spotifyApi.value = api;
+        }
+      });
+
+      provide(SpotifyApiKey, spotifyApi);
+
       return {
         spotifyLogin,
+
+        isSignedIn: computed(() => spotifyCurrentUser.value !== null),
+        username: computed(() => spotifyCurrentUser.value?.display_name),
       };
     },
   });
@@ -77,6 +123,10 @@
       display flex
       flex-direction row
       column-gap 1em
+
+  #user-container
+    text-decoration underline
+    cursor pointer
 
   hr
     margin 20px 0

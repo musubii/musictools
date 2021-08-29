@@ -28,8 +28,10 @@ export default createStore({
           history.replaceState({}, document.title, ".");
         }, 0);
       } else {
-        const storedToken = localStorage.getItem("access_token");
-        if (storedToken) store.commit("setSpotifyToken", storedToken);
+        const storedToken = localStorage.getItem("spotifyToken");
+        if (storedToken) {
+          store.commit("setSpotifyToken", storedToken);
+        }
       }
     },
 
