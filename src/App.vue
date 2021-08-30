@@ -30,7 +30,7 @@
 
   import OctocatCorner from "@/components/OctocatCorner.vue";
 
-  import { SpotifyApiKey } from "@/data/injections";
+  import { SpotifyApiKey, SpotifyCurrentUserKey } from "@/data/injections";
 
   export default defineComponent({
     components: { OctocatCorner },
@@ -58,7 +58,7 @@
       };
 
       // TODO: put state in Vuex store, should remove the need for this
-      fetchState(spotifyApi.value);
+      // fetchState(spotifyApi.value);
 
       watch(spotifyToken, (newValue) => {
         console.log("token changed to", newValue);
@@ -76,6 +76,7 @@
       });
 
       provide(SpotifyApiKey, spotifyApi);
+      provide(SpotifyCurrentUserKey, spotifyCurrentUser);
 
       return {
         spotifyLogin,
@@ -95,10 +96,13 @@
     //background -webkit-linear-gradient(to bottom, #ad5389, #3c1053) /* Chrome 10-25, Safari 5.1-6 */
     //background linear-gradient(to bottom, #ad5389, #3c1053)
 
-    background linear-gradient(135deg, #ad5389, #3c1053)
-    background-size 400% 400%
+    //background linear-gradient(135deg, #ad5389, #3c1053)
+    //background-size 400% 400%
+    //
+    //animation backgroundGradient 30s ease infinite
+    // TODO: re-add background after fixing scroll
 
-    animation backgroundGradient 30s ease infinite
+    background-color #663399
 
     margin 0
     height 100vh
@@ -113,6 +117,11 @@
   #page-container
     max-width 600px
     margin 40px auto
+    background-color rgba(0, 0, 0, 0.3)
+    padding 40px
+
+  h1
+    margin 0
 
   #navbar
     display flex
@@ -135,6 +144,18 @@
 
   a
     color inherit
+
+  button
+    padding 10px
+    border none
+    border-radius 4px
+    cursor pointer
+
+    background-color white
+    color black
+
+    font-size inherit
+    font-weight bold
 
   @keyframes backgroundGradient
     0%

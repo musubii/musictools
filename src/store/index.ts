@@ -1,8 +1,12 @@
 import { createStore } from "vuex";
+import { SimplifiedPlaylist } from "spotify-web-api-ts/types/types/SpotifyObjects";
 
 export default createStore({
   state: {
     spotifyAccessToken: null as string | null,
+
+    // TODO: (editable) playlist abstraction
+    selectedTrackSource: null as SimplifiedPlaylist | null,
   },
   mutations: {
     setSpotifyToken(state, token: string | null) {
@@ -10,6 +14,9 @@ export default createStore({
 
       if (token) localStorage.setItem("spotifyToken", token);
       else localStorage.removeItem("spotifyToken");
+    },
+    setTrackSource(state, source: SimplifiedPlaylist | null) {
+      state.selectedTrackSource = source;
     },
   },
   actions: {
@@ -45,7 +52,17 @@ export default createStore({
         ["response_type", "token"],
         ["redirect_uri", currentLocation],
         // state,
-        ["scope", "playlist-read-private user-library-read user-modify-playback-state user-read-playback-state"],
+        [
+          "scope",
+          [
+            "user-library-read",
+            "user-read-playback-state",
+            "user-modify-playback-state",
+            "playlist-read-private",
+            "playlist-modify-public",
+            "playlist-modify-private",
+          ].join(" "),
+        ],
         ["show_dialog", "false"],
       ]);
       const authUrl = `https://accounts.spotify.com/authorize?${params.toString()}`;
