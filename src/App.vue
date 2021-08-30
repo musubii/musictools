@@ -70,7 +70,10 @@
         api.users
           .getMe()
           .then((user) => (spotifyCurrentUser.value = user))
-          .catch((e) => console.error(e));
+          .catch((e) => {
+            store.commit("setSpotifyToken", null);
+            console.error(e);
+          });
       };
 
       // TODO: put state in Vuex store, should remove the need for this
