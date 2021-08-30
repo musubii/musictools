@@ -48,7 +48,7 @@ export default createStore({
       const currentLocation = window.location.href.split("?")[0].split("#")[0];
 
       const params = new URLSearchParams([
-        ["client_id", "62bebebaf68e407eab01ea7ca182a81a"],
+        ["client_id", "1189301921ea4fd9872c18ce32944382"],
         ["response_type", "token"],
         ["redirect_uri", currentLocation],
         // state,
