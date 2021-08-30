@@ -8,9 +8,16 @@
           <router-link to="/about">About</router-link>
         </nav>
 
-        <div id="user-container" @click="spotifyLogin">
-          <template v-if="isSignedIn">Signed in as {{ username }}</template>
-          <template v-else>Not signed in</template>
+        <div id="user-container">
+          <template v-if="isSignedIn">
+            <div class="user-info">
+              <img class="avatar" :src="spotifyCurrentUser?.images[0]?.url" alt="" />
+              <div class="username">
+                Signed in as <b>{{ spotifyCurrentUser?.display_name }}</b>
+              </div>
+            </div>
+          </template>
+          <div class="sign-in" @click="spotifyLogin" v-else>Click to sign in</div>
         </div>
       </section>
       <hr />
@@ -87,6 +94,7 @@
 
       return {
         spotifyLogin,
+        spotifyCurrentUser,
 
         isSignedIn: computed(() => spotifyCurrentUser.value !== null),
         username: computed(() => spotifyCurrentUser.value?.display_name),
@@ -140,9 +148,10 @@
       flex-direction row
       column-gap 1em
 
-  #user-container
+  .sign-in
     text-decoration underline
     cursor pointer
+    font-weight bold
 
   hr
     margin 20px 0
@@ -185,6 +194,37 @@
 
     a
       color inherit
+
+  .user-info
+    user-select none
+    background-color #101010
+
+    padding 0.25em
+    padding-right calc(0.25em + 0.5em)
+
+    height 2.5em
+    box-sizing border-box
+    border-radius 1.25em
+
+    display flex
+    flex-direction row
+    align-items center
+
+    max-width 400px
+
+    .avatar
+      height 2em
+      border-radius 50%
+      border 1px solid black
+      box-sizing border-box
+      margin-right 0.5em
+
+    .username
+      margin-right 0.5em
+
+      text-overflow ellipsis
+      overflow hidden
+      white-space nowrap
 
   .warn
     background-color rgba(255, 255, 0, 0.3)
