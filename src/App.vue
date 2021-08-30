@@ -186,6 +186,10 @@
     a
       color inherit
 
+  .warn
+    background-color rgba(255, 255, 0, 0.3)
+    padding 10px
+
   @keyframes backgroundGradient
     0%
       background-position: 0 50%
