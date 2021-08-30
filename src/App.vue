@@ -18,6 +18,13 @@
 
     <OctocatCorner />
     <router-view />
+
+    <footer>
+      <p>
+        Made with <a href="https://v3.vuejs.org/">Vue 3</a>. Available under the
+        <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU General Public License</a>.
+      </p>
+    </footer>
   </div>
 </template>
 
@@ -166,6 +173,18 @@
 
     font-size inherit
     font-weight bold
+
+  footer
+    text-align center
+    font-size 8pt
+    color lightgray
+    margin-top 50px
+
+    p
+      margin 0 !important
+
+    a
+      color inherit
 
   @keyframes backgroundGradient
     0%
