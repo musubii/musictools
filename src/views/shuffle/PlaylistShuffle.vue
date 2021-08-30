@@ -1,6 +1,11 @@
 <template>
   <h2>Randomize playlist order</h2>
 
+  <div class="warn">
+    <p><b>Note</b>: This tool will create a new playlist in your library, rather than modifying the old one.</p>
+    <p>This is partially due to API limitations, and it also helps prevent bugs from ruining playlists.</p>
+  </div>
+
   <component :is="currentComponent" />
 </template>
 
@@ -41,3 +46,9 @@
     },
   });
 </script>
+
+<style lang="stylus" scoped>
+  .warn
+    background-color rgba(255, 255, 0, 0.3)
+    padding 10px
+</style>

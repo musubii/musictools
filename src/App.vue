@@ -145,6 +145,16 @@
   a
     color inherit
 
+  div p
+    &:first-child
+      margin 0
+
+    &:last-child
+      margin-bottom 0
+
+    & + p
+      margin-top 1em
+
   button
     padding 10px
     border none
