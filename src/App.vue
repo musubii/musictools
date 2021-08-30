@@ -5,7 +5,7 @@
         <h1>musictools</h1>
         <section id="navbar">
           <nav>
-            <router-link to="/">Home</router-link>
+            <router-link to="/">Tools</router-link>
             <router-link to="/about">About</router-link>
           </nav>
 
@@ -160,11 +160,16 @@
     row-gap 10px
     flex-wrap wrap
     justify-content space-between
+    align-items center
 
     nav
       display flex
       flex-direction row
       column-gap 1em
+
+      a
+        font-weight 600
+        cursor pointer
 
   .sign-in
     text-decoration underline

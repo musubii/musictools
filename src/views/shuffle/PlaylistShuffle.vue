@@ -10,16 +10,24 @@
 </template>
 
 <script lang="ts">
-  import { defineComponent, provide, shallowRef } from "vue";
+  import { defineComponent, inject, provide, shallowRef } from "vue";
   import PlaylistShuffleStep1 from "@/views/shuffle/PlaylistShuffleStep1.vue";
   import PlaylistShuffleStep2 from "@/views/shuffle/PlaylistShuffleStep2.vue";
-  import { ShuffleGotoStepKey } from "@/data/injections";
+  import { ShuffleGotoStepKey, SpotifyCurrentUserKey } from "@/data/injections";
+  import router from "@/router";
 
   export default defineComponent({
     name: "PlaylistShuffle",
     components: { PlaylistShuffleStep1, PlaylistShuffleStep2 },
 
     setup() {
+      const currentUser = inject(SpotifyCurrentUserKey);
+      if (!currentUser) throw new Error("No SpotifyCurrentUser injected");
+
+      if (currentUser.value === null) {
+        router.push("/");
+      }
+
       const currentComponent = shallowRef<unknown>(PlaylistShuffleStep1);
 
       const gotoStep = (step: number) => {
@@ -41,6 +49,7 @@
       provide(ShuffleGotoStepKey, gotoStep);
 
       return {
+        currentUser,
         currentComponent,
       };
     },

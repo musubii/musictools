@@ -93,7 +93,7 @@
         const source = selectedSource.value;
         const user = currentUser.value;
 
-        if (source) {
+        if (source && user) {
           const newPlaylist = await spotify.value.playlists.createPlaylist(user.id, `Shuffled: ${source.name}`, {
             public: source.public,
             collaborative: source.collaborative,

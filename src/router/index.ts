@@ -1,11 +1,17 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
 import Home from "../views/Home.vue";
+import PlaylistShuffle from "@/views/shuffle/PlaylistShuffle.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
     name: "Home",
     component: Home,
+  },
+  {
+    path: "/tools/shuffle",
+    name: "PlaylistShuffle",
+    component: PlaylistShuffle,
   },
   {
     path: "/about",

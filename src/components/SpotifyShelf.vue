@@ -58,7 +58,7 @@
           }
 
           // TODO: move this to Step1
-          return items.filter((p) => p.owner.id === currentUser.value.id);
+          return items.filter((p) => p.owner.id === currentUser.value?.id);
         };
 
         getPlaylists()

@@ -3,8 +3,6 @@
   <h4>Select a source</h4>
 
   <SpotifyShelf />
-
-  <p>(more tools coming soon 🙂)</p>
 </template>
 
 <script lang="ts">
