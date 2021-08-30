@@ -1,37 +1,39 @@
 <template>
-  <div id="page-container">
-    <header>
-      <h1>musictools</h1>
-      <section id="navbar">
-        <nav>
-          <router-link to="/">Home</router-link>
-          <router-link to="/about">About</router-link>
-        </nav>
+  <div id="scroll-container">
+    <div id="page-container">
+      <header>
+        <h1>musictools</h1>
+        <section id="navbar">
+          <nav>
+            <router-link to="/">Home</router-link>
+            <router-link to="/about">About</router-link>
+          </nav>
 
-        <div id="user-container">
-          <template v-if="isSignedIn">
-            <div class="user-info">
-              <img class="avatar" :src="spotifyCurrentUser?.images[0]?.url" alt="" />
-              <div class="username">
-                Signed in as <b>{{ spotifyCurrentUser?.display_name }}</b>
+          <div id="user-container">
+            <template v-if="isSignedIn">
+              <div class="user-info">
+                <img class="avatar" :src="spotifyCurrentUser?.images[0]?.url" alt="" />
+                <div class="username">
+                  Signed in as <b>{{ spotifyCurrentUser?.display_name }}</b>
+                </div>
               </div>
-            </div>
-          </template>
-          <div class="sign-in" @click="spotifyLogin" v-else>Click to sign in</div>
-        </div>
-      </section>
-      <hr />
-    </header>
+            </template>
+            <div class="sign-in" @click="spotifyLogin" v-else>Click to sign in</div>
+          </div>
+        </section>
+        <hr />
+      </header>
 
-    <OctocatCorner />
-    <router-view />
+      <OctocatCorner />
+      <router-view />
 
-    <footer>
-      <p>
-        Made with <a href="https://v3.vuejs.org/">Vue 3</a>. Available under the
-        <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU General Public License</a>.
-      </p>
-    </footer>
+      <footer>
+        <p>
+          Made with <a href="https://v3.vuejs.org/">Vue 3</a>. Available under the
+          <a href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU General Public License</a>.
+        </p>
+      </footer>
+    </div>
   </div>
 </template>
 
@@ -106,16 +108,19 @@
 <style lang="stylus">
   @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400;1,700&display=swap');
 
+  html, body
+    margin 0
+    padding 0
+
   html
     /* https://uigradients.com/#eXpresso */
-    //background -webkit-linear-gradient(to bottom, #ad5389, #3c1053) /* Chrome 10-25, Safari 5.1-6 */
-    //background linear-gradient(to bottom, #ad5389, #3c1053)
+    background -webkit-linear-gradient(to bottom, #ad5389, #3c1053) /* Chrome 10-25, Safari 5.1-6 */
+    background linear-gradient(to bottom, #ad5389, #3c1053)
 
-    //background linear-gradient(135deg, #ad5389, #3c1053)
-    //background-size 400% 400%
-    //
-    //animation backgroundGradient 30s ease infinite
-    // TODO: re-add background after fixing scroll
+    background linear-gradient(135deg, #ad5389, #3c1053)
+    background-size 400% 400%
+
+    animation backgroundGradient 30s ease infinite
 
     background-color #663399
 
@@ -128,6 +133,10 @@
     -moz-osx-font-smoothing grayscale
 
     color white
+
+  #scroll-container
+    height 100vh
+    overflow-y scroll
 
   #page-container
     max-width 600px
