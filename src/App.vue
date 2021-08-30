@@ -142,10 +142,14 @@
     overflow-y scroll
 
   #page-container
-    max-width 600px
+    max-width 680px
     margin 40px auto
     background-color rgba(0, 0, 0, 0.3)
     padding 40px
+    box-sizing border-box
+
+    @media screen and (max-width: 600px)
+      margin 0 auto
 
   h1
     margin 0
@@ -153,6 +157,8 @@
   #navbar
     display flex
     flex-direction row
+    row-gap 10px
+    flex-wrap wrap
     justify-content space-between
 
     nav
@@ -206,6 +212,9 @@
 
     a
       color inherit
+
+  #user-container
+    min-width 0
 
   .user-info
     user-select none
