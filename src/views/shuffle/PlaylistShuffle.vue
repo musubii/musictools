@@ -2,7 +2,7 @@
   <h2>Randomize playlist order</h2>
 
   <div class="warn">
-    <p><b>Note</b>: This tool will create a new playlist in your library, rather than modifying the old one.</p>
+    <p><b>Note</b>: This tool will create a new playlist in your library, rather than modifying the existing one.</p>
     <p>This is partially due to API limitations, and it also helps prevent bugs from ruining playlists.</p>
   </div>
 
