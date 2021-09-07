@@ -139,7 +139,7 @@
 
   #scroll-container
     height 100vh
-    overflow-y scroll
+    overflow-y auto
 
   #page-container
     max-width 680px
