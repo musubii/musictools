@@ -239,7 +239,10 @@
     max-width 400px
 
     .avatar
+      width 2em
       height 2em
+      object-fit cover
+
       border-radius 50%
       border 1px solid black
       box-sizing border-box
