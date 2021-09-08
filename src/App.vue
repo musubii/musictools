@@ -9,17 +9,30 @@
             <router-link to="/about">About</router-link>
           </nav>
 
-          <div id="user-container">
-            <template v-if="isSignedIn">
-              <div class="user-info">
-                <img class="avatar" :src="spotifyCurrentUser?.images[0]?.url" alt="" />
-                <div class="username">
-                  Signed in as <b>{{ spotifyCurrentUser?.display_name }}</b>
+          <nav id="user-container">
+            <!--            <template v-if="isSignedIn">-->
+            <!--              <div class="user-info">-->
+            <!--                <img class="avatar" :src="spotifyCurrentUser?.images[0]?.url" alt="" />-->
+            <!--                <div class="username">-->
+            <!--                  Signed in as <b>{{ spotifyCurrentUser?.display_name }}</b>-->
+            <!--                </div>-->
+            <!--              </div>-->
+            <!--            </template>-->
+            <!--            <div class="sign-in" @click="spotifyLogin" v-else>Click to sign in</div>-->
+            <ul>
+              <li class="menu">
+                <div class="menu-head">Signed in as [TODO]</div>
+                <div class="menu-content">
+                  <ul>
+                    <li>
+                      <div class="menu-head">Signed in as [S]</div>
+                      <div class="menu-head">Signed in as [L]</div>
+                    </li>
+                  </ul>
                 </div>
-              </div>
-            </template>
-            <div class="sign-in" @click="spotifyLogin" v-else>Click to sign in</div>
-          </div>
+              </li>
+            </ul>
+          </nav>
         </section>
         <hr />
       </header>
@@ -170,6 +183,45 @@
       a
         font-weight 600
         cursor pointer
+
+    nav:last-child
+      ul
+        margin 0
+        padding 0
+        list-style none
+
+      li
+        background-color rgba(0,0,0,0.6)
+
+        & > a, & > .menu-head
+          cursor pointer
+          padding 8px 14px
+
+      & .menu *
+        text-align right
+
+      & > ul
+        display flex
+        flex-direction row
+
+      .menu-content
+        padding-top 5px
+        position absolute
+        display none
+        width 100%
+
+      & > ul > li
+        position relative
+
+        ul
+          width 100%
+
+          li
+            width 100%
+            background-color black
+
+      & > ul > li:hover .menu-content
+        display block
 
   .sign-in
     text-decoration underline
