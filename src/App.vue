@@ -67,6 +67,8 @@
     setup() {
       const store = useStore();
 
+      // SPOTIFY AUTH
+
       // TODO: make this a build environment variable
       const spotifyClientId = "6bebebaf68e407eab01ea7ca182a81a";
 
@@ -79,7 +81,7 @@
       const spotifyApi = shallowRef(new SpotifyWebApi({ clientId: spotifyClientId }));
       const spotifyCurrentUser = ref<PrivateUser | null>(null);
 
-      const fetchState = (api: SpotifyWebApi) => {
+      const fetchSpotifyState = (api: SpotifyWebApi) => {
         api.users
           .getMe()
           .then((user) => (spotifyCurrentUser.value = user))
@@ -101,7 +103,7 @@
             accessToken: newValue,
           });
 
-          fetchState(api);
+          fetchSpotifyState(api);
 
           spotifyApi.value = api;
         }
@@ -110,12 +112,29 @@
       provide(SpotifyApiKey, spotifyApi);
       provide(SpotifyCurrentUserKey, spotifyCurrentUser);
 
+      // LAST.FM AUTH
+
+      // TODO: last.fm auth
+      const lastfmCurrentUser = ref<null>(null);
+
       return {
+        authenticatedServices: computed(() => {
+          const services = [];
+
+          if (spotifyCurrentUser.value) services.push("Spotify");
+          if (lastfmCurrentUser.value) services.push("Last.fm");
+
+          return services;
+        }),
+
         spotifyLogin,
         spotifyCurrentUser,
+        spotifyUsername: computed(() => spotifyCurrentUser.value?.display_name),
 
-        isSignedIn: computed(() => spotifyCurrentUser.value !== null),
-        username: computed(() => spotifyCurrentUser.value?.display_name),
+        // TODO: last.fm login
+        lastfmLogin: () => alert("Not yet implemented"),
+        lastfmCurrentUser,
+        lastfmUsername: computed(() => null),
       };
     },
   });
@@ -191,7 +210,8 @@
         list-style none
 
       li
-        background-color rgba(0,0,0,0.6)
+        background-color rgba(0, 0, 0, 0.6)
+        min-width 160px
 
         & > a, & > .menu-head
           cursor pointer
