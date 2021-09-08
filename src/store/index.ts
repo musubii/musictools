@@ -4,6 +4,7 @@ import { SimplifiedPlaylist } from "spotify-web-api-ts/types/types/SpotifyObject
 export default createStore({
   state: {
     spotifyAccessToken: null as string | null,
+    lastfmUsername: null as string | null,
 
     // TODO: (editable) playlist abstraction
     selectedTrackSource: null as SimplifiedPlaylist | null,
@@ -18,8 +19,24 @@ export default createStore({
     setTrackSource(state, source: SimplifiedPlaylist | null) {
       state.selectedTrackSource = source;
     },
+
+    setLastfmUsername(state, username: string | null) {
+      state.lastfmUsername = username;
+
+      if (username) localStorage.setItem("lastfmUsername", username);
+      else localStorage.removeItem("lastfmUsername");
+    },
   },
   actions: {
+    loadStoredState(store) {
+      store.dispatch("loadLastfmUsername");
+      store.dispatch("loadSpotifyToken");
+    },
+
+    loadLastfmUsername(store) {
+      store.commit("setLastfmUsername", localStorage.getItem("lastfmUsername"));
+    },
+
     loadSpotifyToken(store) {
       const pageFragment = window.location.hash.slice(1);
       const fragmentParams = new Map<string, string>();

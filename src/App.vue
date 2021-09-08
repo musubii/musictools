@@ -97,7 +97,7 @@
 
       const spotifyToken = computed(() => store.state.spotifyAccessToken);
 
-      onMounted(() => store.dispatch("loadSpotifyToken"));
+      onMounted(() => store.dispatch("loadStoredState"));
 
       const spotifyApi = shallowRef(new SpotifyWebApi({ clientId: spotifyClientId }));
       const spotifyCurrentUser = ref<PrivateUser | null>(null);
@@ -145,7 +145,7 @@
       const lastfmApi = shallowRef(new LastFm(lastfmClientId));
 
       // TODO: last.fm "auth"
-      const lastfmCurrentUser = ref<string | null>(null);
+      const lastfmCurrentUser = computed(() => store.state.lastfmUsername);
 
       provide(LastfmApiKey, lastfmApi);
 
@@ -165,7 +165,10 @@
         spotifyUsername: computed(() => spotifyCurrentUser.value?.display_name),
 
         // TODO: last.fm login
-        lastfmLogin: () => alert("Not yet implemented"),
+        lastfmLogin: () => {
+          const username = prompt("Enter Last.fm username:");
+          if (username != null) store.commit("setLastfmUsername", username);
+        },
         lastfmCurrentUser,
       };
     },
