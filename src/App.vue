@@ -21,12 +21,33 @@
             <!--            <div class="sign-in" @click="spotifyLogin" v-else>Click to sign in</div>-->
             <ul>
               <li class="menu">
-                <div class="menu-head">Signed in as [TODO]</div>
+                <div class="menu-head">
+                  <template v-if="authenticatedServices.length !== 0">
+                    Signed in to {{ authenticatedServices.join(", ") }}
+                  </template>
+                  <template v-else>Not signed in</template>
+                </div>
                 <div class="menu-content">
                   <ul>
                     <li>
-                      <div class="menu-head">Signed in as [S]</div>
-                      <div class="menu-head">Signed in as [L]</div>
+                      <div class="menu-head">
+                        <template v-if="spotifyCurrentUser">
+                          Signed in to Spotify as {{ spotifyUsername }}
+                          <span class="sign-in" @click="spotifyLogout">(sign out)</span>
+                        </template>
+                        <template v-else>
+                          <span class="sign-in" @click="spotifyLogin">Sign in to Spotify</span>
+                        </template>
+                      </div>
+                      <div class="menu-head">
+                        <template v-if="lastfmCurrentUser">
+                          Last.fm user: {{ lastfmCurrentUser }}
+                          <span class="sign-in" @click="lastfmLogin">(change)</span>
+                        </template>
+                        <template v-else>
+                          <span class="sign-in" @click="lastfmLogin">Set Last.fm username</span>
+                        </template>
+                      </div>
                     </li>
                   </ul>
                 </div>
@@ -57,9 +78,11 @@
   import { SpotifyWebApi } from "spotify-web-api-ts";
   import { PrivateUser } from "spotify-web-api-ts/types/types/SpotifyObjects";
 
+  import LastFm from "@toplast/lastfm";
+
   import OctocatCorner from "@/components/OctocatCorner.vue";
 
-  import { SpotifyApiKey, SpotifyCurrentUserKey } from "@/data/injections";
+  import { LastfmApiKey, SpotifyApiKey, SpotifyCurrentUserKey } from "@/data/injections";
 
   export default defineComponent({
     components: { OctocatCorner },
@@ -76,8 +99,6 @@
 
       onMounted(() => store.dispatch("loadSpotifyToken"));
 
-      const spotifyLogin = () => store.dispatch("getNewSpotifyToken");
-
       const spotifyApi = shallowRef(new SpotifyWebApi({ clientId: spotifyClientId }));
       const spotifyCurrentUser = ref<PrivateUser | null>(null);
 
@@ -87,6 +108,7 @@
           .then((user) => (spotifyCurrentUser.value = user))
           .catch((e) => {
             store.commit("setSpotifyToken", null);
+            spotifyCurrentUser.value = null;
             console.error(e);
           });
       };
@@ -106,16 +128,26 @@
           fetchSpotifyState(api);
 
           spotifyApi.value = api;
+        } else {
+          spotifyApi.value = new SpotifyWebApi({ clientId: spotifyClientId });
+          spotifyCurrentUser.value = null;
         }
       });
 
       provide(SpotifyApiKey, spotifyApi);
       provide(SpotifyCurrentUserKey, spotifyCurrentUser);
 
-      // LAST.FM AUTH
+      // LAST.FM "AUTH"
 
-      // TODO: last.fm auth
-      const lastfmCurrentUser = ref<null>(null);
+      const lastfmClientId =
+        process.env.NODE_ENV === "production" ? "0300c01497ac7540c65f931b3baf50c9" : "f5b90182eeaa4dafa6ed6293327fe3d2";
+
+      const lastfmApi = shallowRef(new LastFm(lastfmClientId));
+
+      // TODO: last.fm "auth"
+      const lastfmCurrentUser = ref<string | null>(null);
+
+      provide(LastfmApiKey, lastfmApi);
 
       return {
         authenticatedServices: computed(() => {
@@ -127,14 +159,14 @@
           return services;
         }),
 
-        spotifyLogin,
+        spotifyLogin: () => store.dispatch("getNewSpotifyToken"),
+        spotifyLogout: () => store.commit("setSpotifyToken", null),
         spotifyCurrentUser,
         spotifyUsername: computed(() => spotifyCurrentUser.value?.display_name),
 
         // TODO: last.fm login
         lastfmLogin: () => alert("Not yet implemented"),
         lastfmCurrentUser,
-        lastfmUsername: computed(() => null),
       };
     },
   });
@@ -211,7 +243,7 @@
 
       li
         background-color rgba(0, 0, 0, 0.6)
-        min-width 160px
+        min-width 240px
 
         & > a, & > .menu-head
           cursor pointer
