@@ -1,13 +1,18 @@
 <template>
   <h2>Top artists</h2>
-  <div class="chart-wrapper">
-    <canvas id="artist-chart" :class="{ hidden: !data }"></canvas>
-    <p class="loading" v-if="!data">Loading... ({{ loadProgress }})</p>
-  </div>
+  <template v-if="lastfmUser">
+    <div class="chart-wrapper">
+      <canvas id="artist-chart" :class="{ hidden: !data }"></canvas>
+      <p class="loading" v-if="!data">Loading... ({{ loadProgress }})</p>
+    </div>
+  </template>
+  <template v-else>
+    <p class="warn">You haven't set your Last.fm username.</p>
+  </template>
 </template>
 
 <script lang="ts">
-  import { defineComponent, inject, onMounted, ref, watch } from "vue";
+  import { computed, defineComponent, inject, onMounted, ref, watch } from "vue";
   import { LastfmApiKey } from "@/data/injections";
   import { useStore } from "vuex";
 
@@ -25,16 +30,18 @@
     setup() {
       const store = useStore();
 
+      const lastfmUser = computed(() => store.state.lastfmUsername);
+
       const lastfm = inject(LastfmApiKey);
       if (!lastfm) throw new Error("No LastfmApi injected");
 
       const data = ref<ChartData | null>(null);
       const loadProgress = ref<number>(0);
 
-      onMounted(async () => {
+      const dataFetch = async () => {
         const now = new Date(Date.now());
 
-        const info = await lastfm.value.user.getInfo({ user: store.state.lastfmUsername });
+        const info = await lastfm.value.user.getInfo({ user: lastfmUser.value });
 
         const topArtistData = await lastfm.value.user.getTopArtists({ user: info.user.name, period: "overall" });
         const topN = topArtistData.topartists.artist.slice(0, 20);
@@ -91,6 +98,14 @@
         }
 
         data.value = { weeks, dataMap };
+      };
+
+      onMounted(() => {
+        if (lastfmUser.value) dataFetch();
+      });
+
+      watch(lastfmUser, () => {
+        window.location.reload();
       });
 
       watch(data, (newValue) => {
@@ -161,6 +176,8 @@
       });
 
       return {
+        lastfmUser,
+
         data,
         loadProgress,
       };
