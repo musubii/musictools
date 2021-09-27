@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+
 import Home from "../views/Home.vue";
+
 import PlaylistShuffle from "@/views/shuffle/PlaylistShuffle.vue";
+import TopArtistsChart from "@/views/chart/TopArtistsChart.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -12,6 +15,11 @@ const routes: Array<RouteRecordRaw> = [
     path: "/tools/shuffle",
     name: "PlaylistShuffle",
     component: PlaylistShuffle,
+  },
+  {
+    path: "/tools/artists",
+    name: "TopArtistsChart",
+    component: TopArtistsChart,
   },
   {
     path: "/about",

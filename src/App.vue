@@ -209,7 +209,7 @@
     overflow-y auto
 
   #page-container
-    max-width 680px
+    max-width 800px
     margin 40px auto
     background-color rgba(0, 0, 0, 0.3)
     padding 40px

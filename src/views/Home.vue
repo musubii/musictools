@@ -1,14 +1,15 @@
 <template>
-  <template v-if="currentUser">
-    <h2>List of tools</h2>
+  <h2>List of tools</h2>
 
+  <h3>Spotify tools</h3>
+  <template v-if="spotifyUser">
     <div class="tool-list">
       <router-link to="/tools/shuffle">
         <div class="tool-item">
           <div class="tool-header">Randomize playlist order</div>
           <p class="tool-body">
-            This tool randomizes the order of a playlist in place, permanently, unlike simply shuffling the playlist.
-            This affects the default ordering of a playlist.
+            Randomizes the order of a playlist in place, permanently, unlike simply shuffling the playlist. This affects
+            the default ordering of a playlist.
           </p>
         </div>
       </router-link>
@@ -17,8 +18,18 @@
     <p>(more tools coming soon 🙂)</p>
   </template>
   <template v-else>
-    <p class="warn">You aren't signed in yet.</p>
+    <p class="warn">You aren't signed in to Spotify.</p>
   </template>
+
+  <h3>Last.fm tools</h3>
+  <div class="tool-list">
+    <router-link to="/tools/artists">
+      <div class="tool-item">
+        <div class="tool-header">Top artists chart</div>
+        <p class="tool-body">Chart visualization of your listening history</p>
+      </div>
+    </router-link>
+  </div>
 </template>
 
 <script lang="ts">
@@ -30,11 +41,11 @@
     name: "Home",
 
     setup() {
-      const currentUser = inject(SpotifyCurrentUserKey);
-      if (!currentUser) throw new Error("No SpotifyCurrentUser injected");
+      const spotifyUser = inject(SpotifyCurrentUserKey);
+      if (!spotifyUser) throw new Error("No SpotifyCurrentUser injected");
 
       return {
-        currentUser,
+        spotifyUser,
       };
     },
   });
