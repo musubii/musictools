@@ -22,30 +22,41 @@
   </template>
 
   <h3>Last.fm tools</h3>
-  <div class="tool-list">
-    <router-link to="/tools/artists">
-      <div class="tool-item">
-        <div class="tool-header">Top artists chart</div>
-        <p class="tool-body">Chart visualization of your listening history</p>
-      </div>
-    </router-link>
-  </div>
+  <template v-if="lastfmUser">
+    <div class="tool-list">
+      <router-link to="/tools/artists">
+        <div class="tool-item">
+          <div class="tool-header">Top artists chart</div>
+          <p class="tool-body">Chart visualization of your listening history</p>
+        </div>
+      </router-link>
+    </div>
+  </template>
+  <template v-else>
+    <p class="warn">You haven't set your Last.fm username.</p>
+  </template>
 </template>
 
 <script lang="ts">
-  import { defineComponent, inject } from "vue";
+  import { computed, defineComponent, inject } from "vue";
 
   import { SpotifyCurrentUserKey } from "@/data/injections";
+  import { useStore } from "vuex";
 
   export default defineComponent({
     name: "Home",
 
     setup() {
+      const store = useStore();
+
       const spotifyUser = inject(SpotifyCurrentUserKey);
       if (!spotifyUser) throw new Error("No SpotifyCurrentUser injected");
 
+      const lastfmUser = computed(() => store.state.lastfmUsername);
+
       return {
         spotifyUser,
+        lastfmUser,
       };
     },
   });
