@@ -1,5 +1,6 @@
 <template>
-  <h2>Top artists</h2>
+  <h2 v-if="lastfmUser">Top artists for {{ lastfmUser }}</h2>
+  <h2 v-else>Top artists</h2>
   <template v-if="lastfmUser">
     <div class="chart-wrapper">
       <canvas id="artist-chart" :class="{ hidden: !data }"></canvas>
