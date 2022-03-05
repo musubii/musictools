@@ -3,7 +3,7 @@
   <template v-if="lastfmUser">
     <div class="chart-wrapper">
       <canvas id="artist-chart" :class="{ hidden: !data }"></canvas>
-      <p class="loading" v-if="!data">Loading... ({{ loadProgress }})</p>
+      <p class="loading" v-if="!data">Loading... ({{ loadProgress }}/{{ totalWeeks }})</p>
     </div>
   </template>
   <template v-else>
@@ -37,6 +37,7 @@
 
       const data = ref<ChartData | null>(null);
       const loadProgress = ref<number>(0);
+      const totalWeeks = ref<number>(NaN);
 
       const dataFetch = async () => {
         const now = new Date(Date.now());
@@ -57,15 +58,28 @@
           .forEach((n) => dataMap.set(n!, []));
 
         const startDate = new Date(Number(info.user.registered.unixtime) * 1000);
-        startDate.setHours(0, 0, 0, 0);
+        startDate.setUTCHours(0, 0, 0, 0);
 
-        let date = new Date(startDate);
-
-        // const endDate = new Date(startDate);
-        // endDate.setDate(endDate.getDate() + 30);
         const endDate = new Date(now);
+        endDate.setUTCHours(0, 0, 0, 0);
 
-        while (date <= endDate) {
+        const fetchPoints = [];
+        {
+          let point = new Date(startDate);
+          for (; point <= endDate; point.setDate(point.getDate() + 7)) {
+            fetchPoints.push(new Date(point));
+          }
+
+          const weekPastEnd = new Date(endDate);
+          weekPastEnd.setDate(weekPastEnd.getDate() + 7);
+
+          if (point < weekPastEnd) {
+            fetchPoints.push(new Date(endDate));
+          }
+        }
+        totalWeeks.value = fetchPoints.length;
+
+        for (const date of fetchPoints) {
           console.log(`Fetched data from ${startDate} to ${date}`);
           const weekInfo = await lastfm.value.user.getWeeklyArtistChart({
             user: info.user.name,
@@ -91,8 +105,6 @@
               dataMap.get(artist.name)?.push(plays);
             }
           }
-
-          date.setDate(date.getDate() + 7);
 
           loadProgress.value++;
         }
@@ -180,6 +192,7 @@
 
         data,
         loadProgress,
+        totalWeeks,
       };
     },
   });
