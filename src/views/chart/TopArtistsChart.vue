@@ -80,6 +80,7 @@
         }
         totalWeeks.value = fetchPoints.length;
 
+        let started = false;
         for (const date of fetchPoints) {
           console.log(`Fetched data from ${startDate} to ${date}`);
           const weekInfo = await lastfm.value.user.getWeeklyArtistChart({
@@ -92,18 +93,25 @@
           const relevant = weekInfo.weeklyartistchart.artist.filter((a) => topN.some((b) => a.name === b.name));
           console.log(date, relevant);
 
-          weeks.push(new Date(date));
-          for (const artist of topN) {
-            if (artist.name) {
-              let plays = 0;
-              for (const data of relevant) {
-                if (data.name === artist.name) {
-                  plays = Number(data.playcount ?? 0);
-                  break;
-                }
-              }
+          // Exclude initial zero data, if present
+          if (!started && relevant.every((data) => Number(data.playcount ?? 0) === 0)) {
+            // Do nothing
+          } else {
+            started = true;
 
-              dataMap.get(artist.name)?.push(plays);
+            weeks.push(new Date(date));
+            for (const artist of topN) {
+              if (artist.name) {
+                let plays = 0;
+                for (const data of relevant) {
+                  if (data.name === artist.name) {
+                    plays = Number(data.playcount ?? 0);
+                    break;
+                  }
+                }
+
+                dataMap.get(artist.name)?.push(plays);
+              }
             }
           }
 
